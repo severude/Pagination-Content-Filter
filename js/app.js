@@ -33,13 +33,35 @@ function appendPageLinks() {
 	html += '<ul>';
 	for (let index = 1; index <= links; index++) {
 		html += '<li>';
-		html += '<a href="#">' + index + '</a>';
+		if (index === 1) {
+			html += '<a href="#" class="active">' + index + '</a>';
+		} else {
+			html += '<a href="#">' + index + '</a>';
+		}
 		html += '</li>';
 	}
 	html += '</ul>';
 
 	// Add page links
 	pageLinks.innerHTML = html;
+	
+	// Use click events to call the showPage function with a page number
+	pageLinks.addEventListener('click', (event) => {
+		// Make sure an anchor tag was clicked
+		if(event.target.tagName == 'A') {
+			// Capture the page number text from the anchor tag
+			let pageNumber = event.target.textContent;
+			// Update the student list to the new page index
+			showPage(pageNumber);
+			
+			// Remove active status of old link
+			let a = pageLinks.getElementsByClassName("active");
+			a[0].className = a[0].className.replace("active", "");
+			// Set link status as active
+			event.target.className = "active";
+		}
+	});
+	
 	
 }
 
