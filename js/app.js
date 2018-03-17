@@ -1,8 +1,8 @@
 const studentList = document.querySelector(".student-list");
 const studentCount = studentList.children.length;
-const pageLinks = document.querySelector(".pagination");
+const studentPage = document.querySelector(".page");
 
-// Show ten students on a page based on the page number
+// Show up to ten students per page based on the page number
 function showPage(pageNumber) {
 
 	// Hide all students on the page
@@ -23,30 +23,42 @@ function showPage(pageNumber) {
 	}
 }
 
+// Creates list of all page links
 function appendPageLinks() {
 	// Calculate number of required Page Links
 	// If there is a remainder when dividing by ten, then add one to the page count, otherwise don't
 	const links = (studentCount % 10) ? parseInt(studentCount / 10) + 1 : parseInt(studentCount / 10);
 
-	// Build page links
-	let html = "";
-	html += '<ul>';
+	// Build pagination links
+	let div = document.createElement('div');
+	div.className = "pagination";
+	let ul = document.createElement('ul');
 	for (let index = 1; index <= links; index++) {
-		html += '<li>';
-		if (index === 1) {
-			html += '<a href="#" class="active">' + index + '</a>';
-		} else {
-			html += '<a href="#">' + index + '</a>';
+		let li = document.createElement('li');
+		let a = document.createElement('a');
+		a.href = "#";
+		a.textContent = index;
+		// Always setting index one as active by default
+		if(index === 1) {
+			a.className = "active";
 		}
-		html += '</li>';
+		li.appendChild(a);
+		ul.appendChild(li);
 	}
-	html += '</ul>';
+	div.appendChild(ul);
 
-	// Add page links
-	pageLinks.innerHTML = html;
-	
+	// If pagination links already exist, then delete them
+	let pagination = document.querySelector(".pagination");
+	if(pagination !== null) {
+		pagination.parentNode.removeChild(pagination);
+	}
+
+	// Add pagination links
+	studentPage.appendChild(div);
+	pagination = document.querySelector(".pagination");
+
 	// Use click events to call the showPage function with a page number
-	pageLinks.addEventListener('click', (event) => {
+	pagination.addEventListener('click', (event) => {
 		// Make sure an anchor tag was clicked
 		if(event.target.tagName == 'A') {
 			// Capture the page number text from the anchor tag
@@ -55,8 +67,8 @@ function appendPageLinks() {
 			showPage(pageNumber);
 			
 			// Remove active status of old link
-			let a = pageLinks.getElementsByClassName("active");
-			a[0].className = a[0].className.replace("active", "");
+			let anchor = pagination.getElementsByClassName("active");
+			anchor[0].className = anchor[0].className.replace("active", "");
 			// Set link status as active
 			event.target.className = "active";
 		}
