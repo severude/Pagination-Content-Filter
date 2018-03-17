@@ -1,13 +1,13 @@
-const studentList = document.querySelector(".student-list");
-const studentCount = studentList.children.length;
-const studentPage = document.querySelector(".page");
-
 // Show up to ten students per page based on the page number
-function showPage(pageNumber) {
+// Requires page number and student list as parameters
+function showPage(pageNumber, list) {
+
+	// Calculate the length of the list
+	let studentCount = list.children.length;
 
 	// Hide all students on the page
 	for (let index = 0; index < studentCount; index++) {
-		studentList.children[index].style.display = "none";
+		list.children[index].style.display = "none";
 	}
 	
 	// Calculate range of students to display
@@ -19,12 +19,16 @@ function showPage(pageNumber) {
 	
 	// Display students for this page
 	for (var index = lowerBound; index < upperBound; index++) {
-		studentList.children[index].style.display = "block";
+		list.children[index].style.display = "block";
 	}
 }
 
-// Creates list of all page links
-function appendPageLinks() {
+// Creates list of all page links, requires student list as a parameter
+function appendPageLinks(list) {
+
+	// Calculate the length of the list
+	let studentCount = list.children.length;
+
 	// Calculate number of required Page Links
 	// If there is a remainder when dividing by ten, then add one to the page count, otherwise don't
 	const links = (studentCount % 10) ? parseInt(studentCount / 10) + 1 : parseInt(studentCount / 10);
@@ -54,6 +58,7 @@ function appendPageLinks() {
 	}
 
 	// Add pagination links
+	let studentPage = document.querySelector(".page");
 	studentPage.appendChild(div);
 	pagination = document.querySelector(".pagination");
 
@@ -64,7 +69,7 @@ function appendPageLinks() {
 			// Capture the page number text from the anchor tag
 			let pageNumber = event.target.textContent;
 			// Update the student list to the new page index
-			showPage(pageNumber);
+			showPage(pageNumber, list);
 			
 			// Remove active status of old link
 			let anchor = pagination.getElementsByClassName("active");
@@ -74,9 +79,9 @@ function appendPageLinks() {
 		}
 	});
 	
-	
 }
 
-showPage(1);
-
-appendPageLinks();
+// Start the program
+const studentList = document.querySelector(".student-list");
+showPage(1, studentList);
+appendPageLinks(studentList);
