@@ -1,7 +1,6 @@
 // Show up to ten students per page based on the page number
 // Requires page number and student list as parameters
 function showPage(pageNumber, list) {
-
 	// Calculate the length of the list
 	let studentCount = list.children.length;
 
@@ -23,9 +22,8 @@ function showPage(pageNumber, list) {
 	}
 }
 
-// Creates list of all page links, requires student list as a parameter
+// Creates a list of all page links, requires student list as a parameter
 function appendPageLinks(list) {
-
 	// Calculate the length of the list
 	let studentCount = list.children.length;
 
@@ -60,9 +58,9 @@ function appendPageLinks(list) {
 	// Add pagination links
 	let studentPage = document.querySelector(".page");
 	studentPage.appendChild(div);
-	pagination = document.querySelector(".pagination");
 
 	// Use click events to call the showPage function with a page number
+	pagination = document.querySelector(".pagination");
 	pagination.addEventListener('click', (event) => {
 		// Make sure an anchor tag was clicked
 		if(event.target.tagName == 'A') {
@@ -78,10 +76,38 @@ function appendPageLinks(list) {
 			event.target.className = "active";
 		}
 	});
-	
 }
 
-// Start the program
-const studentList = document.querySelector(".student-list");
-showPage(1, studentList);
-appendPageLinks(studentList);
+// Build and attach a searchbox to the top of the page
+function buildSearchBox() {
+	// Build an input and search button 
+	let div = document.createElement('div');
+	div.className = "student-search";
+	let input = document.createElement('input');
+	input.placeholder="Search for students...";
+	div.appendChild(input);
+	let button = document.createElement('button');
+	button.textContent = "Search";
+	div.appendChild(button);
+	
+	// Attach to page-header div
+	let pageHeader = document.querySelector(".page-header");
+	pageHeader.appendChild(div);
+	
+	// Add event listener for the button to call the searchList function
+	button.addEventListener('click', searchList);
+}
+
+// Search function to retrieve student list based on search parameters
+function searchList() {
+}
+
+// Render the Students Page
+function renderPaginationFilter() {
+	let studentList = document.querySelector(".student-list");
+	buildSearchBox();
+	showPage(1, studentList);
+	appendPageLinks(studentList);
+}
+
+renderPaginationFilter();
