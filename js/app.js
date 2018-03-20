@@ -1,3 +1,5 @@
+const studentList = document.querySelector(".student-list");
+
 // Show up to ten students per page based on the page number
 // Requires page number and student list as parameters
 function showPage(pageNumber, list) {
@@ -49,18 +51,13 @@ function appendPageLinks(list) {
 	}
 	div.appendChild(ul);
 
-	// If pagination links already exist, then delete them
-	let pagination = document.querySelector(".pagination");
-	if(pagination !== null) {
-		pagination.parentNode.removeChild(pagination);
-	}
-
 	// Add pagination links
+	removePaginationLinks();
 	let studentPage = document.querySelector(".page");
 	studentPage.appendChild(div);
 
 	// Use click events to call the showPage function with a page number
-	pagination = document.querySelector(".pagination");
+	let pagination = document.querySelector(".pagination");
 	pagination.addEventListener('click', (event) => {
 		// Make sure an anchor tag was clicked
 		if(event.target.tagName == 'A') {
@@ -76,6 +73,15 @@ function appendPageLinks(list) {
 			event.target.className = "active";
 		}
 	});
+}
+
+// Remove old pagination links if they exist
+function removePaginationLinks() {
+	// If pagination links already exist, then delete them
+	let pagination = document.querySelector(".pagination");
+	if(pagination !== null) {
+		pagination.parentNode.removeChild(pagination);
+	}
 }
 
 // Build and attach a searchbox to the top of the page
@@ -96,18 +102,61 @@ function buildSearchBox() {
 	
 	// Add event listener for the button to call the searchList function
 	button.addEventListener('click', searchList);
+	
+	// Create a message element
+	let message = document.createElement('h4');
+	message.className = "search-message";
+	div.append(message);
 }
 
 // Search function to retrieve student list based on search parameters
 function searchList() {
+	// Get the search value in lowercase
+	let searchValue = document.getElementsByTagName('input')[0].value.toLowerCase();
+	// Remove the pagination links
+	removePaginationLinks();
+		
+	// Calculate the length of the list
+	let studentCount = studentList.children.length;
+	// Hide all students on the page
+	for (let index = 0; index < studentCount; index++) {
+		studentList.children[index].style.display = "none";
+	}
+	// Total of student matches
+	let studentTotal = 0;
+	
+	// Test all students on the page for search match
+	for (let index = 0; index < studentCount; index++) {
+		// Capture h3 element
+		let h3Text = studentList.children[index].getElementsByTagName("h3")[0].innerHTML.toLowerCase();
+		// Capture span element
+		let spanText = studentList.children[index].getElementsByTagName("span")[0].innerHTML.toLowerCase();
+		
+		// Test if elements contain text from search field
+		if(h3Text.indexOf(searchValue) > -1 || spanText.indexOf(searchValue) > -1) {
+			studentTotal += 1;
+			studentList.children[index].style.display = "block";
+		} else {
+			studentList.children[index].style.display = "none";
+		}
+	}
+
+	// Message for number of students found
+	let searchMessage = document.querySelector('.search-message');
+	if(studentTotal === 0) {
+		searchMessage.textContent = "Sorry, no students were found";
+	} else {
+		searchMessage.textContent = studentTotal + " students found";
+	}
+	searchValue.value = "";
+	
 }
 
-// Render the Students Page
-function renderPaginationFilter() {
-	let studentList = document.querySelector(".student-list");
+// Render the pagination filter content
+function renderPaginationFilter(list) {
 	buildSearchBox();
-	showPage(1, studentList);
-	appendPageLinks(studentList);
+	showPage(1, list);
+	appendPageLinks(list);
 }
 
-renderPaginationFilter();
+renderPaginationFilter(studentList);
