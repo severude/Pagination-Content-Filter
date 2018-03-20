@@ -7,9 +7,7 @@ function showPage(pageNumber, list) {
 	let studentCount = list.length;
 
 	// Hide all students on the page
-	for (let index = 0; index < studentCount; index++) {
-		list[index].style.display = "none";
-	}
+	hideList();
 	
 	// Calculate range of students to display
 	let upperBound = pageNumber * 10;
@@ -84,6 +82,13 @@ function removePaginationLinks() {
 	}
 }
 
+// Hide all the students on the page
+function hideList() {
+	for (let index = 0; index < studentList.length; index++) {
+		studentList[index].style.display = "none";
+	}
+}
+
 // Build and attach a searchbox to the top of the page
 function buildSearchBox() {
 	// Build an input and search button 
@@ -109,27 +114,26 @@ function buildSearchBox() {
 	div.append(message);
 }
 
-// Search function to retrieve student list based on search parameters
+// Search for student list based on input element search parameters
 function searchList() {
 	// Get the search value in lowercase
 	let searchValue = document.getElementsByTagName('input')[0].value.toLowerCase();
-	// Remove the pagination links
+	
+	// Remove the pagination links and hide the list
 	removePaginationLinks();
-		
-	// Hide all students on the page
-	for (let index = 0; index < studentList.length; index++) {
-		studentList[index].style.display = "none";
-	}
+	hideList();
 
+	// Storage for all student matches
 	let matches = [];
-	// Test all students on the page for search match
+	
+	// Test all students on the page for the search match
 	for (let index = 0; index < studentList.length; index++) {
 		// Capture h3 element
 		let h3Text = studentList[index].getElementsByTagName("h3")[0].innerHTML.toLowerCase();
 		// Capture span element
 		let spanText = studentList[index].getElementsByTagName("span")[0].innerHTML.toLowerCase();
 		
-		// Test if elements contain text from search field
+		// Test if element contains text from search field
 		if(h3Text.indexOf(searchValue) > -1 || spanText.indexOf(searchValue) > -1) {
 			matches.push(studentList[index]);
 		} 
@@ -142,19 +146,23 @@ function searchList() {
 	} else {
 		searchMessage.textContent = matches.length + " students found";
 	}
+	
+	// Render all matches and show results
 	if(matches.length > 10) {
 		appendPageLinks(matches);
 	}
 	showPage(1, matches);
+
+	// Clear search box
 	searchValue.value = "";
 	
 }
 
 // Render the pagination filter content
-function renderPaginationFilter(list) {
+function render(list) {
 	buildSearchBox();
 	showPage(1, list);
 	appendPageLinks(list);
 }
 
-renderPaginationFilter(studentList);
+render(studentList);
