@@ -1,14 +1,14 @@
-const studentList = document.querySelector(".student-list");
+const studentList = document.querySelector(".student-list").children;
 
 // Show up to ten students per page based on the page number
 // Requires page number and student list as parameters
 function showPage(pageNumber, list) {
 	// Calculate the length of the list
-	let studentCount = list.children.length;
+	let studentCount = list.length;
 
 	// Hide all students on the page
 	for (let index = 0; index < studentCount; index++) {
-		list.children[index].style.display = "none";
+		list[index].style.display = "none";
 	}
 	
 	// Calculate range of students to display
@@ -20,14 +20,14 @@ function showPage(pageNumber, list) {
 	
 	// Display students for this page
 	for (var index = lowerBound; index < upperBound; index++) {
-		list.children[index].style.display = "block";
+		list[index].style.display = "block";
 	}
 }
 
 // Creates a list of all page links, requires student list as a parameter
 function appendPageLinks(list) {
 	// Calculate the length of the list
-	let studentCount = list.children.length;
+	let studentCount = list.length;
 
 	// Calculate number of required Page Links
 	// If there is a remainder when dividing by ten, then add one to the page count, otherwise don't
@@ -116,38 +116,36 @@ function searchList() {
 	// Remove the pagination links
 	removePaginationLinks();
 		
-	// Calculate the length of the list
-	let studentCount = studentList.children.length;
 	// Hide all students on the page
-	for (let index = 0; index < studentCount; index++) {
-		studentList.children[index].style.display = "none";
+	for (let index = 0; index < studentList.length; index++) {
+		studentList[index].style.display = "none";
 	}
-	// Total of student matches
-	let studentTotal = 0;
-	
+
+	let matches = [];
 	// Test all students on the page for search match
-	for (let index = 0; index < studentCount; index++) {
+	for (let index = 0; index < studentList.length; index++) {
 		// Capture h3 element
-		let h3Text = studentList.children[index].getElementsByTagName("h3")[0].innerHTML.toLowerCase();
+		let h3Text = studentList[index].getElementsByTagName("h3")[0].innerHTML.toLowerCase();
 		// Capture span element
-		let spanText = studentList.children[index].getElementsByTagName("span")[0].innerHTML.toLowerCase();
+		let spanText = studentList[index].getElementsByTagName("span")[0].innerHTML.toLowerCase();
 		
 		// Test if elements contain text from search field
 		if(h3Text.indexOf(searchValue) > -1 || spanText.indexOf(searchValue) > -1) {
-			studentTotal += 1;
-			studentList.children[index].style.display = "block";
-		} else {
-			studentList.children[index].style.display = "none";
-		}
+			matches.push(studentList[index]);
+		} 
 	}
 
 	// Message for number of students found
 	let searchMessage = document.querySelector('.search-message');
-	if(studentTotal === 0) {
+	if(matches.length === 0) {
 		searchMessage.textContent = "Sorry, no students were found";
 	} else {
-		searchMessage.textContent = studentTotal + " students found";
+		searchMessage.textContent = matches.length + " students found";
 	}
+	if(matches.length > 10) {
+		appendPageLinks(matches);
+	}
+	showPage(1, matches);
 	searchValue.value = "";
 	
 }
