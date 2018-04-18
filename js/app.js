@@ -154,7 +154,7 @@ function searchList() {
 	showPage(1, matches);
 
 	// Clear search box
-	searchValue.value = "";
+	document.getElementsByTagName('input')[0].value = "";
 	
 }
 
